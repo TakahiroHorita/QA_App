@@ -31,12 +31,12 @@ public class LoginActivity extends AppCompatActivity {
     EditText mEmailEditText;
     EditText mPasswordEditText;
     EditText mNameEditText;
-    ProgressDialog mProgress;
+    ProgressDialog mProgress; //プログレスダイアログ
 
-    FirebaseAuth mAuth;
-    OnCompleteListener<AuthResult> mCreateAccountListener;
-    OnCompleteListener<AuthResult> mLoginListener;
-    DatabaseReference mDataBaseReference;
+    FirebaseAuth mAuth; //FirebaseAuthクラス
+    OnCompleteListener<AuthResult> mCreateAccountListener; //処理の完了を受け取るリスナー、アカウント作成処理用
+    OnCompleteListener<AuthResult> mLoginListener; //処理の完了を受け取るリスナー、ログイン処理用
+    DatabaseReference mDataBaseReference; //データベースの読み書きに必要
 
     // アカウント作成時にフラグを立て、ログイン処理後に名前をFirebaseに保存する
     boolean mIsCreateAccount = false;

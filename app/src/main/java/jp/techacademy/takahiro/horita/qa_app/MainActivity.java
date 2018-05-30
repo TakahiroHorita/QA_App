@@ -1,165 +1,100 @@
 package jp.techacademy.takahiro.horita.qa_app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+    implements NavigationView.OnNavigationItemSelectedListener {
+
+    private Toolbar mToolbar;
+    private int mGenre = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_main);
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
 
-        mDataBaseReference = FirebaseDatabase.getInstance().getReference();
-
-        // FirebaseAuthのオブジェクトを取得する
-        mAuth = FirebaseAuth.getInstance();
-
-        // アカウント作成処理のリスナー
-        mCreateAccountListener = new OnCompleteListener<AuthResult>() {
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onComplete(Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    // 成功した場合
-                    // ログインを行う
-                    String email = mEmailEditText.getText().toString();
-                    String password = mPasswordEditText.getText().toString();
-                    login(email, password);
-                } else {
+            public void onClick(View view) {
+                // ログイン済みのユーザーを取得する
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                    // 失敗した場合
-                    // エラーを表示する
-                    View view = findViewById(android.R.id.content);
-                    Snackbar.make(view, "アカウント作成に失敗しました", Snackbar.LENGTH_LONG).show();
-
-                    // プログレスダイアログを非表示にする
-                    mProgress.dismiss();
+                // ログインしていなければログイン画面に遷移させる
+                if (user == null) {
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(intent);
                 }
-            }
-        };
 
-        // ログイン処理のリスナー
-        mLoginListener = new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(Task<AuthResult> task) {
-
-                if (task.isSuccessful()) {
-                    // 成功した場合
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    DatabaseReference userRef = mDataBaseReference.child(Const.UsersPATH).child(user.getUid());
-
-                    if (mIsCreateAccount) {
-                        // アカウント作成の時は表示名をFirebaseに保存する
-                        String name = mNameEditText.getText().toString();
-
-
-                        Map<String, String> data = new HashMap<String, String>();
-                        data.put("name", name);
-                        userRef.setValue(data);
-
-                        // 表示名をPrefarenceに保存する
-                        saveName(name);
-                    } else {
-                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot snapshot) {
-                                Map data = snapshot.getValue(Map.class);
-                                saveName((String) data.get("name"));
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError firebaseError) {
-                            }
-                        });
-                    }
-
-                    // プログレスダイアログを非表示にする
-                    mProgress.dismiss();
-
-                    // Activityを閉じる
-                    finish();
-
-                } else {
-                    // 失敗した場合
-                    // エラーを表示する
-                    View view = findViewById(android.R.id.content);
-                    Snackbar.make(view, "ログインに失敗しました", Snackbar.LENGTH_LONG).show();
-
-                    // プログレスダイアログを非表示にする
-                    mProgress.dismiss();
-                }
-            }
-        };
-
-        // UIの準備
-        setTitle("ログイン");
-
-        mEmailEditText = (EditText) findViewById(R.id.emailText);
-        mPasswordEditText = (EditText) findViewById(R.id.passwordText);
-        mNameEditText = (EditText) findViewById(R.id.nameText);
-
-        mProgress = new ProgressDialog(this);
-        mProgress.setMessage("処理中...");
-
-        Button createButton = (Button) findViewById(R.id.createButton);
-        createButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // キーボードが出てたら閉じる
-                InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                im.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
-                String email = mEmailEditText.getText().toString();
-                String password = mPasswordEditText.getText().toString();
-                String name = mNameEditText.getText().toString();
-
-                if (email.length() != 0 && password.length() >= 6 && name.length() != 0) {
-                    // ログイン時に表示名を保存するようにフラグを立てる
-                    mIsCreateAccount = true;
-
-                    createAccount(email, password);
-                } else {
-                    // エラーを表示する
-                    Snackbar.make(v, "正しく入力してください", Snackbar.LENGTH_LONG).show();
-                }
             }
         });
 
-        Button loginButton = (Button) findViewById(R.id.loginButton);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // キーボードが出てたら閉じる
-                InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                im.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        // ナビゲーションドロワーの設定
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.app_name, R.string.app_name);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
 
-                String email = mEmailEditText.getText().toString();
-                String password = mPasswordEditText.getText().toString();
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
 
-                if (email.length() != 0 && password.length() >= 6) {
-                    // フラグを落としておく
-                    mIsCreateAccount = false;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
-                    login(email, password);
-                } else {
-                    // エラーを表示する
-                    Snackbar.make(v, "正しく入力してください", Snackbar.LENGTH_LONG).show();
-                }
-            }
-        });
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.nav_hobby) {
+            mToolbar.setTitle("趣味");
+            mGenre = 1;
+        } else if (id == R.id.nav_life) {
+            mToolbar.setTitle("生活");
+            mGenre = 2;
+        } else if (id == R.id.nav_health) {
+            mToolbar.setTitle("健康");
+            mGenre = 3;
+        } else if (id == R.id.nav_compter) {
+            mToolbar.setTitle("コンピューター");
+            mGenre = 4;
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

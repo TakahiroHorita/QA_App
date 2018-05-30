@@ -1,5 +1,7 @@
 package jp.techacademy.takahiro.horita.qa_app;
 
+//定数用クラス
+
 public class Const {
     public static final String UsersPATH = "users"; // Firebaseにユーザの表示名を保存するパス
     public static final String ContentsPATH = "contents"; // Firebaseに質問を保存するバス
