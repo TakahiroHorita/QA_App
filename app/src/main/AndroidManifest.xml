@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="jp.techacademy.takahiro.horita.qa_app">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -24,6 +25,9 @@
         </activity>
         <activity android:name=".LoginActivity"></activity>
         <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".QuestionSendActivity"></activity>
+        <activity android:name=".QuestionDetailActivity"></activity>
+        <activity android:name=".AnswerSendActivity"></activity>
     </application>
 
 </manifest>
