@@ -61,16 +61,16 @@ public class QuestionDetailListAdapter extends BaseAdapter {
             String body = mQuestion.getBody();
             String name = mQuestion.getName();
 
-            TextView bodyTextView = (TextView) convertView.findViewById(R.id.bodyTextView);
+            TextView bodyTextView = convertView.findViewById(R.id.bodyTextView);
             bodyTextView.setText(body);
 
-            TextView nameTextView = (TextView) convertView.findViewById(R.id.nameTextView);
+            TextView nameTextView = convertView.findViewById(R.id.nameTextView);
             nameTextView.setText(name);
 
             byte[] bytes = mQuestion.getImageBytes();
             if (bytes.length != 0) {
                 Bitmap image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length).copy(Bitmap.Config.ARGB_8888, true);
-                ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
+                ImageView imageView = convertView.findViewById(R.id.imageView);
                 imageView.setImageBitmap(image);
             }
         } else {
@@ -82,10 +82,10 @@ public class QuestionDetailListAdapter extends BaseAdapter {
             String body = answer.getBody();
             String name = answer.getName();
 
-            TextView bodyTextView = (TextView) convertView.findViewById(R.id.bodyTextView);
+            TextView bodyTextView = convertView.findViewById(R.id.bodyTextView);
             bodyTextView.setText(body);
 
-            TextView nameTextView = (TextView) convertView.findViewById(R.id.nameTextView);
+            TextView nameTextView = convertView.findViewById(R.id.nameTextView);
             nameTextView.setText(name);
         }
 

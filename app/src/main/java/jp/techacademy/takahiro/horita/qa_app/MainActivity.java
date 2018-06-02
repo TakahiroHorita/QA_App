@@ -16,8 +16,8 @@ import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -25,7 +25,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -34,8 +33,6 @@ public class MainActivity extends AppCompatActivity
 
     private Toolbar mToolbar;
     private int mGenre = 0;
-
-    // --- ここから ---
     private DatabaseReference mDatabaseReference;
     private DatabaseReference mGenreRef;
     private ListView mListView;
@@ -117,7 +114,6 @@ public class MainActivity extends AppCompatActivity
 
         }
     };
-    // --- ここまで追加する ---
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

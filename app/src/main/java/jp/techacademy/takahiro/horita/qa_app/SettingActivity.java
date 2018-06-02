@@ -10,12 +10,10 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,14 +30,14 @@ public class SettingActivity extends AppCompatActivity {
         // Preferenceから表示名を取得してEditTextに反映させる
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         String name = sp.getString(Const.NameKEY, "");
-        mNameText = (EditText) findViewById(R.id.nameText);
+        mNameText = findViewById(R.id.nameText);
         mNameText.setText(name);
 
         mDataBaseReference = FirebaseDatabase.getInstance().getReference();
 
         // UIの初期設定
         setTitle("設定");
-        Button changeButton = (Button) findViewById(R.id.changeButton);
+        Button changeButton = findViewById(R.id.changeButton);
         changeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +71,7 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
-        Button logoutButton = (Button) findViewById(R.id.logoutButton);
+        Button logoutButton = findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

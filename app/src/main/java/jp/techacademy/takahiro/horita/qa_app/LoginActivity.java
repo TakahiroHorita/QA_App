@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -22,7 +21,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +30,6 @@ public class LoginActivity extends AppCompatActivity {
     EditText mPasswordEditText;
     EditText mNameEditText;
     ProgressDialog mProgress; //プログレスダイアログ
-
     FirebaseAuth mAuth; //FirebaseAuthクラス
     OnCompleteListener<AuthResult> mCreateAccountListener; //処理の完了を受け取るリスナー、アカウント作成処理用
     OnCompleteListener<AuthResult> mLoginListener; //処理の完了を受け取るリスナー、ログイン処理用
@@ -129,14 +126,14 @@ public class LoginActivity extends AppCompatActivity {
         // UIの準備
         setTitle("ログイン");
 
-        mEmailEditText = (EditText) findViewById(R.id.emailText);
-        mPasswordEditText = (EditText) findViewById(R.id.passwordText);
-        mNameEditText = (EditText) findViewById(R.id.nameText);
+        mEmailEditText = findViewById(R.id.emailText);
+        mPasswordEditText = findViewById(R.id.passwordText);
+        mNameEditText = findViewById(R.id.nameText);
 
         mProgress = new ProgressDialog(this);
         mProgress.setMessage("処理中...");
 
-        Button createButton = (Button) findViewById(R.id.createButton);
+        Button createButton = findViewById(R.id.createButton);
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button loginButton = (Button) findViewById(R.id.loginButton);
+        Button loginButton = findViewById(R.id.loginButton);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

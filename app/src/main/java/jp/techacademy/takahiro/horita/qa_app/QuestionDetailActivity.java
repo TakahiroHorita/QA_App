@@ -6,7 +6,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ListView;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -81,12 +80,12 @@ public class QuestionDetailActivity extends AppCompatActivity {
         setTitle(mQuestion.getTitle());
 
         // ListViewの準備
-        mListView = (ListView) findViewById(R.id.listView);
+        mListView = findViewById(R.id.listView);
         mAdapter = new QuestionDetailListAdapter(this, mQuestion);
         mListView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,6 +110,5 @@ public class QuestionDetailActivity extends AppCompatActivity {
         DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
         mAnswerRef = dataBaseReference.child(Const.ContentsPATH).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid()).child(Const.AnswersPATH);
         mAnswerRef.addChildEventListener(mEventListener);
-
     }
 }

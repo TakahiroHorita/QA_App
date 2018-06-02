@@ -11,12 +11,10 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,11 +34,11 @@ public class AnswerSendActivity extends AppCompatActivity implements View.OnClic
         mQuestion = (Question) extras.get("question");
 
         // UIの準備
-        mAnswerEditText = (EditText) findViewById(R.id.answerEditText);
+        mAnswerEditText = findViewById(R.id.answerEditText);
         mProgress = new ProgressDialog(this);
         mProgress.setMessage("投稿中...");
 
-        Button sendButton = (Button) findViewById(R.id.sendButton);
+        Button sendButton = findViewById(R.id.sendButton);
         sendButton.setOnClickListener(this);
     }
 
@@ -89,5 +87,4 @@ public class AnswerSendActivity extends AppCompatActivity implements View.OnClic
         mProgress.show();
         answerRef.push().setValue(data, this);
     }
-
 }
