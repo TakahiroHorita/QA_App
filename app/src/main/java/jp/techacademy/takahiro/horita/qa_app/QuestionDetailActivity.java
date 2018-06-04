@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,6 +23,11 @@ public class QuestionDetailActivity extends AppCompatActivity {
     private ListView mListView;
     private Question mQuestion;
     private QuestionDetailListAdapter mAdapter;
+
+    // 6/4追加 ---ここから---
+    private ImageButton mFavoriteButton_ON;
+    private ImageButton mFavoriteButton_OFF;
+    // 6/4追加 ---ここまで---
 
     private DatabaseReference mAnswerRef;
 
@@ -85,6 +92,11 @@ public class QuestionDetailActivity extends AppCompatActivity {
         mListView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
 
+        // 6/4追加 ---ここから---
+        mFavoriteButton_ON = findViewById(R.id.FavoriteButton_ON);
+        mFavoriteButton_OFF = findViewById(R.id.FavoriteButton_OFF);
+        // 6/4追加 ---ここまで---
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,5 +122,21 @@ public class QuestionDetailActivity extends AppCompatActivity {
         DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
         mAnswerRef = dataBaseReference.child(Const.ContentsPATH).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid()).child(Const.AnswersPATH);
         mAnswerRef.addChildEventListener(mEventListener);
+    }
+
+    protected void onResume() {
+        super.onResume();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            // ログインしていなければお気に入りボタンは表示しない
+            mFavoriteButton_ON.setVisibility(View.INVISIBLE);
+            mFavoriteButton_OFF.setVisibility(View.INVISIBLE);
+        } else {
+            // ログインしていればお気に入りボタンを表示する
+            mFavoriteButton_ON.setVisibility(View.VISIBLE);
+            mFavoriteButton_OFF.setVisibility(View.VISIBLE);
+        }
+
     }
 }
