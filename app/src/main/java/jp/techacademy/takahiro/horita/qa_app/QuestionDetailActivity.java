@@ -1,10 +1,17 @@
 package jp.techacademy.takahiro.horita.qa_app;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -17,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class QuestionDetailActivity extends AppCompatActivity {
 
@@ -27,6 +35,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
     // 6/4追加 ---ここから---
     private ImageButton mFavoriteButton_ON;
     private ImageButton mFavoriteButton_OFF;
+
     // 6/4追加 ---ここまで---
 
     private DatabaseReference mAnswerRef;
@@ -83,6 +92,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
         // 渡ってきたQuestionのオブジェクトを保持する
         Bundle extras = getIntent().getExtras();
         mQuestion = (Question) extras.get("question");
+        Log.d("ログ",String.valueOf(mQuestion.getGenre()));
 
         setTitle(mQuestion.getTitle());
 
@@ -94,6 +104,45 @@ public class QuestionDetailActivity extends AppCompatActivity {
 
         // 6/4追加 ---ここから---
         mFavoriteButton_ON = findViewById(R.id.FavoriteButton_ON);
+        mFavoriteButton_OFF = findViewById(R.id.FavoriteButton_OFF);
+
+        mFavoriteButton_ON.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
+                DatabaseReference answerRef = dataBaseReference.child(Const.ContentsPATH).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid()).child(Const.FavoritesPATH);
+                Log.d("ログ",String.valueOf(answerRef));
+                Map<String, String> data = new HashMap<String, String>();
+                // UID
+                data.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                Log.d("ログ",String.valueOf(FirebaseAuth.getInstance().getCurrentUser().getUid()));
+                //answerRef.push().setValue(data, this);
+                answerRef.push().setValue(data);
+
+                mFavoriteButton_ON.setVisibility(View.INVISIBLE);
+                mFavoriteButton_OFF.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+        mFavoriteButton_OFF.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
+                DatabaseReference answerRef = dataBaseReference.child(Const.ContentsPATH).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid()).child(Const.FavoritesPATH);
+                Map<String, String> data = new HashMap<String, String>();
+                // UID
+                data.put("uid", null);
+                answerRef.push().setValue(data);
+                mFavoriteButton_ON.setVisibility(View.VISIBLE);
+                mFavoriteButton_OFF.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
+
         mFavoriteButton_OFF = findViewById(R.id.FavoriteButton_OFF);
         // 6/4追加 ---ここまで---
 
@@ -137,6 +186,5 @@ public class QuestionDetailActivity extends AppCompatActivity {
             mFavoriteButton_ON.setVisibility(View.VISIBLE);
             mFavoriteButton_OFF.setVisibility(View.VISIBLE);
         }
-
     }
 }
