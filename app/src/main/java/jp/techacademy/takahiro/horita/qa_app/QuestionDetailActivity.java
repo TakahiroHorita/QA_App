@@ -32,11 +32,8 @@ public class QuestionDetailActivity extends AppCompatActivity {
     private Question mQuestion;
     private QuestionDetailListAdapter mAdapter;
 
-    // 6/4追加 ---ここから---
     private ImageButton mFavoriteButton_ON;
     private ImageButton mFavoriteButton_OFF;
-
-    // 6/4追加 ---ここまで---
 
     private DatabaseReference mAnswerRef;
 
@@ -92,7 +89,6 @@ public class QuestionDetailActivity extends AppCompatActivity {
         // 渡ってきたQuestionのオブジェクトを保持する
         Bundle extras = getIntent().getExtras();
         mQuestion = (Question) extras.get("question");
-        Log.d("ログ",String.valueOf(mQuestion.getGenre()));
 
         setTitle(mQuestion.getTitle());
 
@@ -102,25 +98,27 @@ public class QuestionDetailActivity extends AppCompatActivity {
         mListView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
 
-        // 6/4追加 ---ここから---
         mFavoriteButton_ON = findViewById(R.id.FavoriteButton_ON);
         mFavoriteButton_OFF = findViewById(R.id.FavoriteButton_OFF);
+
+        //Todo お気に入りに登録済みかどうかを確認する処理
+        //Todo アイコンを変更する
+
 
         mFavoriteButton_ON.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
-                DatabaseReference answerRef = dataBaseReference.child(Const.ContentsPATH).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid()).child(Const.FavoritesPATH);
-                Log.d("ログ",String.valueOf(answerRef));
+                DatabaseReference answerRef = dataBaseReference.child(Const.FavoritesPATH).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 Map<String, String> data = new HashMap<String, String>();
-                // UID
-                data.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                Log.d("ログ",String.valueOf(FirebaseAuth.getInstance().getCurrentUser().getUid()));
-                //answerRef.push().setValue(data, this);
+
+                data.put("qid", mQuestion.getQuestionUid());
                 answerRef.push().setValue(data);
 
-                mFavoriteButton_ON.setVisibility(View.INVISIBLE);
+                Snackbar.make(view, "お気に入りに登録しました", Snackbar.LENGTH_LONG).show();
+
+                mFavoriteButton_ON.setVisibility(View.GONE);
                 mFavoriteButton_OFF.setVisibility(View.VISIBLE);
 
             }
@@ -131,20 +129,19 @@ public class QuestionDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
-                DatabaseReference answerRef = dataBaseReference.child(Const.ContentsPATH).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid()).child(Const.FavoritesPATH);
-                Map<String, String> data = new HashMap<String, String>();
-                // UID
-                data.put("uid", null);
-                answerRef.push().setValue(data);
+                DatabaseReference answerRef = dataBaseReference.child(Const.FavoritesPATH).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mQuestion.getQuestionUid());
+                //answerRef.removeValue();
+                answerRef.setValue(null);
+
+                Snackbar.make(view, "お気に入りから削除しました", Snackbar.LENGTH_LONG).show();
+
                 mFavoriteButton_ON.setVisibility(View.VISIBLE);
-                mFavoriteButton_OFF.setVisibility(View.INVISIBLE);
+                mFavoriteButton_OFF.setVisibility(View.GONE);
 
             }
         });
 
 
-        mFavoriteButton_OFF = findViewById(R.id.FavoriteButton_OFF);
-        // 6/4追加 ---ここまで---
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
