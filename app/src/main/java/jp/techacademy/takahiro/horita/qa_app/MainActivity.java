@@ -119,10 +119,11 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -184,8 +185,23 @@ public class MainActivity extends AppCompatActivity
 
         // 1:趣味を既定の選択とする
         if(mGenre == 0) {
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            NavigationView navigationView = findViewById(R.id.nav_view);
             onNavigationItemSelected(navigationView.getMenu().getItem(0));
+        }
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        MenuItem item = menu.findItem(R.id.nav_favorite);
+
+        // ログイン済みのユーザーを取得する
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user == null) {
+            // ログインしていなければお気に入りを非表示にする
+            item.setVisible(false);
+        }else{
+            // ログインしていればお気に入りを表示する
+            item.setVisible(true);
         }
     }
 
@@ -224,6 +240,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_compter) {
             mToolbar.setTitle("コンピューター");
             mGenre = 4;
+        } else if (id == R.id.nav_favorite) {
+            mToolbar.setTitle("お気に入り");
+            mGenre = 5;
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
