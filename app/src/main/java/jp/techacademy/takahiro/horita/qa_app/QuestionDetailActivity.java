@@ -213,7 +213,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
             mFavoriteButton_OFF.setVisibility(View.GONE);
 
         } else {
-
+            // ログインしていればお気に入りボタンを表示する
             mFavoriteButton_ON.setVisibility(View.VISIBLE);
             mFavoriteButton_OFF.setVisibility(View.GONE);
 

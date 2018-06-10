@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,11 +34,13 @@ public class MainActivity extends AppCompatActivity
 
     private Toolbar mToolbar;
     private int mGenre = 0;
-    private DatabaseReference mDatabaseReference;
-    private DatabaseReference mGenreRef;
+    private DatabaseReference mDatabaseReference; //データベースへの読み書きに必要なクラス
+    private DatabaseReference mGenreRef; //データベースへの読み書きに必要なクラス
     private ListView mListView;
     private ArrayList<Question> mQuestionArrayList;
     private QuestionsListAdapter mAdapter;
+
+    private Question mQuestion;
 
     private ChildEventListener mEventListener = new ChildEventListener() {
         @Override
@@ -59,7 +62,7 @@ public class MainActivity extends AppCompatActivity
             HashMap answerMap = (HashMap) map.get("answers");
             if (answerMap != null) {
                 for (Object key : answerMap.keySet()) {
-                    HashMap temp = (HashMap) answerMap.get((String) key);
+                    HashMap temp = (HashMap) answerMap.get( key);
                     String answerBody = (String) temp.get("body");
                     String answerName = (String) temp.get("name");
                     String answerUid = (String) temp.get("uid");
@@ -93,7 +96,6 @@ public class MainActivity extends AppCompatActivity
                             question.getAnswers().add(answer);
                         }
                     }
-
                     mAdapter.notifyDataSetChanged();
                 }
             }
@@ -242,7 +244,8 @@ public class MainActivity extends AppCompatActivity
             mGenre = 4;
         } else if (id == R.id.nav_favorite) {
             mToolbar.setTitle("お気に入り");
-            mGenre = 5;
+            mGenre = 10;
+            //favoriteactivityに飛ばす　インテント
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -256,10 +259,11 @@ public class MainActivity extends AppCompatActivity
 
         // 選択したジャンルにリスナーを登録する
         if (mGenreRef != null) {
-            mGenreRef.removeEventListener(mEventListener);
+            mGenreRef.removeEventListener(mEventListener); //コールバックを削除する
         }
+        //データベースからデータを読み取るにはDatabaseReference のインスタンスが必要
         mGenreRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre));
-        mGenreRef.addChildEventListener(mEventListener);
+        mGenreRef.addChildEventListener(mEventListener); //child イベントのリスナーを追加する
         // --- ここまで追加する ---
         return true;
     }
