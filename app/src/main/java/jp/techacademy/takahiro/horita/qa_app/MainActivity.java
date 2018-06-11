@@ -40,12 +40,11 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<Question> mQuestionArrayList;
     private QuestionsListAdapter mAdapter;
 
-    private Question mQuestion;
-
     private ChildEventListener mEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             HashMap map = (HashMap) dataSnapshot.getValue();
+            Log.d("ログ2", String.valueOf(map));
             String title = (String) map.get("title");
             String body = (String) map.get("body");
             String name = (String) map.get("name");
@@ -243,9 +242,14 @@ public class MainActivity extends AppCompatActivity
             mToolbar.setTitle("コンピューター");
             mGenre = 4;
         } else if (id == R.id.nav_favorite) {
-            mToolbar.setTitle("お気に入り");
+//            mToolbar.setTitle("お気に入り");
             mGenre = 10;
-            //favoriteactivityに飛ばす　インテント
+            //Todo favoriteactivityに飛ばす　インテント
+
+            Intent intent = new Intent(MainActivity.this, FavoriteActivity.class);
+//            intent.putExtra("genre", mGenre);
+            startActivity(intent);
+
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

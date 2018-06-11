@@ -32,8 +32,8 @@ public class QuestionDetailActivity extends AppCompatActivity {
     private Question mQuestion;
     private QuestionDetailListAdapter mAdapter;
 
-    private ImageButton mFavoriteButton_ON;
-    private ImageButton mFavoriteButton_OFF;
+    private Button mFavoriteButton;
+    private Boolean mFavoriteFlag = false;
 
     private DatabaseReference mAnswerRef;
     private DatabaseReference mFavoriteRef;
@@ -42,10 +42,10 @@ public class QuestionDetailActivity extends AppCompatActivity {
 
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            mFavoriteButton_ON.setVisibility(View.GONE);
-            mFavoriteButton_OFF.setVisibility(View.VISIBLE);
             Log.d("ログ","onChildAdded");
 
+            mFavoriteButton.setBackgroundResource(android.R.drawable.btn_star_big_off);
+            mFavoriteFlag = true;
         }
 
         @Override
@@ -56,9 +56,11 @@ public class QuestionDetailActivity extends AppCompatActivity {
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
-            mFavoriteButton_ON.setVisibility(View.VISIBLE);
-            mFavoriteButton_OFF.setVisibility(View.GONE);
             Log.d("ログ","onChildRemoved");
+
+            mFavoriteButton.setBackgroundResource(android.R.drawable.btn_star_big_on);
+            mFavoriteFlag = false;
+
         }
 
         @Override
@@ -123,8 +125,9 @@ public class QuestionDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question_detail);
 
-        mFavoriteButton_ON = findViewById(R.id.FavoriteButton_ON);
-        mFavoriteButton_OFF = findViewById(R.id.FavoriteButton_OFF);
+        mFavoriteButton = findViewById(R.id.FavoriteButton);
+        mFavoriteButton.setBackgroundResource(android.R.drawable.btn_star_big_on);
+        mFavoriteFlag = false;
 
         // 渡ってきたQuestionのオブジェクトを保持する
         Bundle extras = getIntent().getExtras();
@@ -138,40 +141,39 @@ public class QuestionDetailActivity extends AppCompatActivity {
         mListView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
 
-        mFavoriteButton_ON.setOnClickListener(new View.OnClickListener() {
+        mFavoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
+                if(mFavoriteFlag == false){
 
-                DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
-                DatabaseReference answerRef = dataBaseReference.child(Const.FavoritesPATH).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mQuestion.getQuestionUid());
-                Map<String, String> data = new HashMap<String, String>();
+                    DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
+                    DatabaseReference answerRef = dataBaseReference.child(Const.FavoritesPATH).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mQuestion.getQuestionUid());
+                    Map<String, String> data = new HashMap<String, String>();
 
-                data.put("genre", String.valueOf(mQuestion.getGenre()));
-                answerRef.setValue(data);
+                    data.put("genre", String.valueOf(mQuestion.getGenre()));
+                    answerRef.setValue(data);
 
-                Snackbar.make(view, "お気に入りに登録しました", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(v, "お気に入りに登録しました", Snackbar.LENGTH_LONG).show();
 
-                //お気に入りボタンの表示を変更
-                mFavoriteButton_ON.setVisibility(View.GONE);
-                mFavoriteButton_OFF.setVisibility(View.VISIBLE);
+                    //お気に入りボタンの表示を変更
+                    mFavoriteButton.setBackgroundResource(android.R.drawable.btn_star_big_off);
+                    mFavoriteFlag = true;
 
-            }
-        });
+                }else{
 
-        mFavoriteButton_OFF.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                    DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
+                    DatabaseReference answerRef = dataBaseReference.child(Const.FavoritesPATH).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mQuestion.getQuestionUid());
+                    //answerRef.removeValue();
+                    answerRef.setValue(null);
 
-                DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
-                DatabaseReference answerRef = dataBaseReference.child(Const.FavoritesPATH).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mQuestion.getQuestionUid());
-                //answerRef.removeValue();
-                answerRef.setValue(null);
+                    Snackbar.make(v, "お気に入りから削除しました", Snackbar.LENGTH_LONG).show();
 
-                Snackbar.make(view, "お気に入りから削除しました", Snackbar.LENGTH_LONG).show();
+                    //お気に入りボタンの表示を変更
+                    mFavoriteButton.setBackgroundResource(android.R.drawable.btn_star_big_on);
+                    mFavoriteFlag = false;
 
-                //お気に入りボタンの表示を変更
-                mFavoriteButton_ON.setVisibility(View.VISIBLE);
-                mFavoriteButton_OFF.setVisibility(View.GONE);
+                }
+
 
             }
         });
@@ -209,13 +211,13 @@ public class QuestionDetailActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             // ログインしていなければお気に入りボタンは表示しない
-            mFavoriteButton_ON.setVisibility(View.GONE);
-            mFavoriteButton_OFF.setVisibility(View.GONE);
+            mFavoriteButton.setVisibility(View.GONE);
 
         } else {
             // ログインしていればお気に入りボタンを表示する
-            mFavoriteButton_ON.setVisibility(View.VISIBLE);
-            mFavoriteButton_OFF.setVisibility(View.GONE);
+            mFavoriteButton.setVisibility(View.VISIBLE);
+            mFavoriteButton.setBackgroundResource(android.R.drawable.btn_star_big_on);
+            mFavoriteFlag = false;
 
             DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
             mFavoriteRef = dataBaseReference.child(Const.FavoritesPATH).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mQuestion.getQuestionUid());
