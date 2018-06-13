@@ -1,11 +1,12 @@
 package jp.techacademy.takahiro.horita.qa_app;
 
-import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -14,69 +15,71 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
-public class FavoriteActivity extends AppCompatActivity{
+public class FavoriteActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
+
 
     private DatabaseReference mDatabaseReference; //データベースへの読み書きに必要なクラス
-    private DatabaseReference mFavoriteRef; //データベースへの読み書きに必要なクラス
+    private DatabaseReference mFavoriteRef;
 
     private LayoutInflater mLayoutInflater = null;
     private Question mQuestion;
-
-/*
-    private ChildEventListener mEventListener = new ChildEventListener() {
-        @Override
-        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            HashMap map = (HashMap) dataSnapshot.getValue();
-            String title = (String) map.get("title");
-            String body = (String) map.get("body");
-            String name = (String) map.get("name");
-            String uid = (String) map.get("uid");
-            String imageString = (String) map.get("image");
-            byte[] bytes;
-            if (imageString != null) {
-                bytes = Base64.decode(imageString, Base64.DEFAULT);
-            } else {
-                bytes = new byte[0];
-            }
-
-            ArrayList<Answer> answerArrayList = new ArrayList<Answer>();
-            HashMap answerMap = (HashMap) map.get("answers");
-            if (answerMap != null) {
-                for (Object key : answerMap.keySet()) {
-                    HashMap temp = (HashMap) answerMap.get( key);
-                    String answerBody = (String) temp.get("body");
-                    String answerName = (String) temp.get("name");
-                    String answerUid = (String) temp.get("uid");
-                    Answer answer = new Answer(answerBody, answerName, answerUid, (String) key);
-                    answerArrayList.add(answer);
-                }
-            }
-
-//            Question question = new Question(title, body, name, uid, dataSnapshot.getKey(), mGenre, bytes, answerArrayList);
-//            mQuestionArrayList.add(question);
-//            mAdapter.notifyDataSetChanged();
-        }
-
+    private Map<String, String> mFavoriteMap;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_favorite);
-
-        // 渡ってきたQuestionのオブジェクトを保持する
-//        Bundle extras = getIntent().getExtras();
-//        mQuestion = (Question) extras.get("question");
-
-//        setTitle(mQuestion.getTitle());
-
-
+        mFavoriteMap = new HashMap<>();
 
         DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
-        mFavoriteRef = dataBaseReference.child(Const.FavoritesPATH).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        DatabaseReference mFavoriteRef = dataBaseReference.child(Const.FavoritesPATH).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         mFavoriteRef.addChildEventListener(mEventListener);
-        Log.d("ログ2", String.valueOf(mFavoriteRef));
+    }
+
+    private ChildEventListener mEventListener = new ChildEventListener() {
+
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            Log.d("ログ", String.valueOf(dataSnapshot));
+            String quid = dataSnapshot.getKey();
+            HashMap map = (HashMap) dataSnapshot.getValue();
+            String genre = (String) map.get("genre");
+//            Log.d("ログ", "genre : " + String.valueOf(genre));
+            mFavoriteMap.put(quid, genre);
+//            Log.d("ログ", "mFavoriteMap : " + String.valueOf(mFavoriteMap));
+
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.d("ログ", "onCancelled");
+        }
+    };
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
+    }
+
+
 
 
         /*

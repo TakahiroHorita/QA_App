@@ -42,7 +42,6 @@ public class QuestionDetailActivity extends AppCompatActivity {
 
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            Log.d("ログ","onChildAdded");
 
             mFavoriteButton.setBackgroundResource(android.R.drawable.btn_star_big_off);
             mFavoriteFlag = true;
