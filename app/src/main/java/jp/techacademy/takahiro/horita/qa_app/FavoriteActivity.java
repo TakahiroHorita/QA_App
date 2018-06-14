@@ -24,6 +24,7 @@ public class FavoriteActivity extends AppCompatActivity
 
     private DatabaseReference mDatabaseReference; //データベースへの読み書きに必要なクラス
     private DatabaseReference mFavoriteRef;
+    private DatabaseReference mGenreRef;
 
     private LayoutInflater mLayoutInflater = null;
     private Question mQuestion;
@@ -34,22 +35,24 @@ public class FavoriteActivity extends AppCompatActivity
         setContentView(R.layout.list_favorite);
         mFavoriteMap = new HashMap<>();
 
-        DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference mFavoriteRef = dataBaseReference.child(Const.FavoritesPATH).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
+        mFavoriteRef = mDatabaseReference.child(Const.FavoritesPATH).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         mFavoriteRef.addChildEventListener(mEventListener);
+
     }
 
     private ChildEventListener mEventListener = new ChildEventListener() {
 
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            Log.d("ログ", String.valueOf(dataSnapshot));
             String quid = dataSnapshot.getKey();
             HashMap map = (HashMap) dataSnapshot.getValue();
             String genre = (String) map.get("genre");
-//            Log.d("ログ", "genre : " + String.valueOf(genre));
             mFavoriteMap.put(quid, genre);
-//            Log.d("ログ", "mFavoriteMap : " + String.valueOf(mFavoriteMap));
+
+            mGenreRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(genre));
+            mGenreRef.addChildEventListener(mEventListener2); //child イベントのリスナーを追加する
 
         }
 
@@ -73,6 +76,36 @@ public class FavoriteActivity extends AppCompatActivity
             Log.d("ログ", "onCancelled");
         }
     };
+
+    private ChildEventListener mEventListener2 = new ChildEventListener() {
+
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            Log.d("ログ", "dataSnapshot : " + String.valueOf(dataSnapshot));
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.d("ログ", "onCancelled");
+        }
+    };
+
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
