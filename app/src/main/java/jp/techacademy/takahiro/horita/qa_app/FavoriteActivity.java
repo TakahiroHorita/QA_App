@@ -29,16 +29,21 @@ public class FavoriteActivity extends AppCompatActivity
     private LayoutInflater mLayoutInflater = null;
     private Question mQuestion;
     private Map<String, String> mFavoriteMap;
+    private Map<String, String> mGenreMap;
+    private String mGenre;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_favorite);
         mFavoriteMap = new HashMap<>();
+        mGenreMap = new HashMap<>();
 
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
+        Log.d("ログ", "00");
         mFavoriteRef = mDatabaseReference.child(Const.FavoritesPATH).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         mFavoriteRef.addChildEventListener(mEventListener);
+        Log.d("ログ", "06");
 
     }
 
@@ -46,13 +51,18 @@ public class FavoriteActivity extends AppCompatActivity
 
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            Log.d("ログ", "01");
+
             String quid = dataSnapshot.getKey();
             HashMap map = (HashMap) dataSnapshot.getValue();
-            String genre = (String) map.get("genre");
-            mFavoriteMap.put(quid, genre);
+            mGenre = (String) map.get("genre");
+            mFavoriteMap.put(mGenre, quid);
+            Log.d("ログ", "mFavoriteMap : "+mFavoriteMap);
+            Log.d("ログ", "02");
 
-            mGenreRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(genre));
+            mGenreRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre));
             mGenreRef.addChildEventListener(mEventListener2); //child イベントのリスナーを追加する
+            Log.d("ログ", "03");
 
         }
 
@@ -81,7 +91,11 @@ public class FavoriteActivity extends AppCompatActivity
 
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            Log.d("ログ", "dataSnapshot : " + String.valueOf(dataSnapshot));
+            Log.d("ログ", "04");
+            String quid = dataSnapshot.getKey();
+            mGenreMap.put(mGenre, quid);
+            Log.d("ログ", "mGenreMap : "+mGenreMap);
+            Log.d("ログ", "05");
         }
 
         @Override
