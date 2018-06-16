@@ -104,9 +104,7 @@ public class FavoriteActivity extends AppCompatActivity
             Log.d("ログ", "onCancelled");
         }
     };
-
-
-
+    
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return false;
