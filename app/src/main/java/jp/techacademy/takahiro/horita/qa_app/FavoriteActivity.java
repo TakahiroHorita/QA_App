@@ -29,22 +29,16 @@ public class FavoriteActivity extends AppCompatActivity
     private LayoutInflater mLayoutInflater = null;
     private Question mQuestion;
     private Map<String, String> mFavoriteMap;
-    private Map<String, String> mGenreMap;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_favorite);
         mFavoriteMap = new HashMap<>();
-        mGenreMap = new HashMap<>();
 
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
         mFavoriteRef = mDatabaseReference.child(Const.FavoritesPATH).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         mFavoriteRef.addChildEventListener(mEventListener);
-
-        mGenreRef = mDatabaseReference.child(Const.ContentsPATH);
-        mGenreRef.addChildEventListener(mEventListener2); //child イベントのリスナーを追加する
-
 
     }
 
@@ -55,7 +49,10 @@ public class FavoriteActivity extends AppCompatActivity
             String quid = dataSnapshot.getKey();
             HashMap map = (HashMap) dataSnapshot.getValue();
             String genre = (String) map.get("genre");
-            mFavoriteMap.put(genre, quid);
+            mFavoriteMap.put(quid, genre);
+
+            mGenreRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(genre));
+            mGenreRef.addChildEventListener(mEventListener2); //child イベントのリスナーを追加する
 
         }
 
@@ -84,11 +81,7 @@ public class FavoriteActivity extends AppCompatActivity
 
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            String genre = dataSnapshot.getKey();
-//            HashMap map2 = (HashMap) dataSnapshot.getValue();
-//            String quid = map2.getKey();
-//            mGenreMap.put(genre, quid);
-
+            Log.d("ログ", "dataSnapshot : " + String.valueOf(dataSnapshot));
         }
 
         @Override
@@ -108,14 +101,46 @@ public class FavoriteActivity extends AppCompatActivity
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-
+            Log.d("ログ", "onCancelled");
         }
     };
+
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return false;
     }
 
+
+
+
+        /*
+        Favorite
+
+        HashMap<String, String> mFaroviteMap
+
+        Key Value
+        質問ＩＤ　ジャンル
+        Ａ　　　　１
+        Ｄ　　　　３
+        Ｇ　　　　２
+
+        mFariteMap.put(質問のＩＤ、ジャンル)
+
+        ジャンル　質問ＩＤ
+
+
+                Contents
+
+
+        for(int i=1 i<=4 i++);
+
+        MGenreRef=
+                mGenreRef.addEventLisetener
+
+        if(mFariteMap.conteinsKey(dataSnapshot.getKey()){
+        }
+  */
 }
 
