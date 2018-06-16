@@ -114,33 +114,5 @@ public class FavoriteActivity extends AppCompatActivity
 
 
 
-
-        /*
-        Favorite
-
-        HashMap<String, String> mFaroviteMap
-
-        Key Value
-        質問ＩＤ　ジャンル
-        Ａ　　　　１
-        Ｄ　　　　３
-        Ｇ　　　　２
-
-        mFariteMap.put(質問のＩＤ、ジャンル)
-
-        ジャンル　質問ＩＤ
-
-
-                Contents
-
-
-        for(int i=1 i<=4 i++);
-
-        MGenreRef=
-                mGenreRef.addEventLisetener
-
-        if(mFariteMap.conteinsKey(dataSnapshot.getKey()){
-        }
-  */
 }
 
