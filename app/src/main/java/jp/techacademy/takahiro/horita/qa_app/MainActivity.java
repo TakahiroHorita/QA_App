@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             Question question = new Question(title, body, name, uid, dataSnapshot.getKey(), mGenre, bytes, answerArrayList);
+            Log.d("Question",String.valueOf(question));
             mQuestionArrayList.add(question);
             mAdapter.notifyDataSetChanged();
         }
