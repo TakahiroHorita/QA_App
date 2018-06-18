@@ -50,9 +50,6 @@ public class FavoriteActivity extends AppCompatActivity
         mFavoriteRef = mDatabaseReference.child(Const.FavoritesPATH).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         mFavoriteRef.addChildEventListener(mEventListener);
 
-        mGenreRef = mDatabaseReference.child(Const.ContentsPATH);
-        mGenreRef.addChildEventListener(mEventListener2);
-
         // ListViewの準備
         mListView = findViewById(R.id.listView);
         mAdapter = new QuestionsListAdapter(this);
@@ -68,8 +65,6 @@ public class FavoriteActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
-
-
     }
 
     private ChildEventListener mEventListener = new ChildEventListener() {
@@ -79,7 +74,12 @@ public class FavoriteActivity extends AppCompatActivity
             String quid = dataSnapshot.getKey();
             HashMap map = (HashMap) dataSnapshot.getValue();
             String genre = (String) map.get("genre");
-            mFavoriteMap.put(quid, genre);
+            mFavoriteMap.put(genre, quid);
+            Log.d("mFavoriteMap", String.valueOf(mFavoriteMap));
+
+            mGenreRef = mDatabaseReference.child(Const.ContentsPATH).child(genre).child(quid);
+            mGenreRef.addChildEventListener(mEventListener2);
+
 
         }
 
@@ -108,20 +108,16 @@ public class FavoriteActivity extends AppCompatActivity
 
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//            HashMap map = (HashMap) dataSnapshot.getValue();
-            HashMap<String, HashMap<String, String>> map = (HashMap) dataSnapshot.getValue();
-            Log.d("ログ", String.valueOf(map));
-            if(mFavoriteMap.containsKey(map)){
-
-
-            }
-
-/*
-            String title = String.valueOf(map.get("title"));
-            String body = String.valueOf(map.get("body"));
-            String name = String.valueOf(map.get("name"));
-            String uid = String.valueOf(map.get("uid"));
-            String imageString = String.valueOf(map.get("image"));
+            Log.d("DataSnapshot", String.valueOf(dataSnapshot));
+            Log.d("getValue",String.valueOf(dataSnapshot.getValue()));
+            HashMap map = (HashMap) dataSnapshot.getValue();
+            Log.d("map", String.valueOf(map));
+            /*
+            String title = (String) map.get("title");
+            String body = (String) map.get("body");
+            String name = (String) map.get("name");
+            String uid = (String) map.get("uid");
+            String imageString = (String) map.get("image");
             byte[] bytes;
             if (imageString != null) {
                 bytes = Base64.decode(imageString, Base64.DEFAULT);
@@ -138,13 +134,20 @@ public class FavoriteActivity extends AppCompatActivity
                     String answerName = (String) temp.get("name");
                     String answerUid = (String) temp.get("uid");
                     Answer answer = new Answer(answerBody, answerName, answerUid, (String) key);
+                    Log.d("Answer",String.valueOf(answer));
                     answerArrayList.add(answer);
                 }
             }
 
             Question question = new Question(title, body, name, uid, dataSnapshot.getKey(), mGenre, bytes, answerArrayList);
+            Log.d("Question",String.valueOf(question));
             mQuestionArrayList.add(question);
             mAdapter.notifyDataSetChanged();
+*/
+/*
+            if(mFavoriteMap.containsKey(quid)){
+                Log.d("イコール", quid);
+            }
 */
         }
 
