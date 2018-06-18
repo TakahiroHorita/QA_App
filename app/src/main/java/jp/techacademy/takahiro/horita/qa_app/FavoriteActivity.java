@@ -108,10 +108,16 @@ public class FavoriteActivity extends AppCompatActivity
 
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            Log.d("DataSnapshot", String.valueOf(dataSnapshot));
-            Log.d("getValue",String.valueOf(dataSnapshot.getValue()));
             HashMap map = (HashMap) dataSnapshot.getValue();
-            Log.d("map", String.valueOf(map));
+            Log.d("ログ", "map :" + String.valueOf(map));
+//            Log.d("ログ", "dataSnapshot :" + String.valueOf(dataSnapshot));
+//            Log.d("ログ","getValue1 :" + String.valueOf(dataSnapshot.getValue()));
+
+//            HashMap map = (HashMap) dataSnapshot.getValue();
+//            String title = (String) map.get("title");
+//            Log.d("title", String.valueOf(title));
+//            HashMap map = (HashMap) dataSnapshot.getValue();
+//            Log.d("map", String.valueOf(map));
             /*
             String title = (String) map.get("title");
             String body = (String) map.get("body");
