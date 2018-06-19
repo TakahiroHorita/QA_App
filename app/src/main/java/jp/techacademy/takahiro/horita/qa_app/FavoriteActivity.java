@@ -77,7 +77,8 @@ public class FavoriteActivity extends AppCompatActivity
             mFavoriteMap.put(genre, quid);
             Log.d("mFavoriteMap", String.valueOf(mFavoriteMap));
 
-            mGenreRef = mDatabaseReference.child(Const.ContentsPATH).child(genre).child(quid);
+            mGenreRef = mDatabaseReference.child(Const.ContentsPATH).child(genre);
+//            mGenreRef = mDatabaseReference.child(Const.ContentsPATH).child(genre).child(quid);
             mGenreRef.addChildEventListener(mEventListener2);
 
 
@@ -108,10 +109,22 @@ public class FavoriteActivity extends AppCompatActivity
 
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            String key = dataSnapshot.getKey();
             HashMap map = (HashMap) dataSnapshot.getValue();
-            Log.d("ログ", "map :" + String.valueOf(map));
+
+            if (mFavoriteMap.containsValue(key)) {
+                Log.d("ログ", "一緒です。");
+                Log.d("ログ","mQuid :" + mFavoriteMap);
+                Log.d("ログ","key :" + key);
+            } else {
+                Log.d("ログ", "違います。");
+                Log.d("ログ","mQuid :" + mFavoriteMap);
+                Log.d("ログ","key :" + key);
+            }
+
+            //            Log.d("ログ", "map :" + String.valueOf(map));
 //            Log.d("ログ", "dataSnapshot :" + String.valueOf(dataSnapshot));
-//            Log.d("ログ","getValue1 :" + String.valueOf(dataSnapshot.getValue()));
+            Log.d("ログ","map :" + map);
 
 //            HashMap map = (HashMap) dataSnapshot.getValue();
 //            String title = (String) map.get("title");
