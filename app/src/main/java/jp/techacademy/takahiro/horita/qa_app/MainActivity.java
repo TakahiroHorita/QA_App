@@ -242,6 +242,7 @@ public class MainActivity extends AppCompatActivity
             mToolbar.setTitle("コンピューター");
             mGenre = 4;
         } else if (id == R.id.nav_favorite) {
+            mToolbar.setTitle("お気に入り");
             Intent intent = new Intent(MainActivity.this, FavoriteActivity.class);
             startActivity(intent);
 

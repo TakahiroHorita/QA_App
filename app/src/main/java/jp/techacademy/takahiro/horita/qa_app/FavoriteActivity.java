@@ -38,6 +38,7 @@ public class FavoriteActivity extends AppCompatActivity
     private Map<String, String> mFavoriteMap;
 
     private int mGenre = 0;
+    private Toolbar mToolbar;
 
     private ListView mListView;
     private ArrayList<Question> mQuestionArrayList;
@@ -46,14 +47,25 @@ public class FavoriteActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_favorite);
-
         mFavoriteMap = new HashMap<>();
+
+        // ナビゲーションドロワーの設定
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.app_name, R.string.app_name);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         // ListViewの準備
         mListView = findViewById(R.id.listView);
         mAdapter = new QuestionsListAdapter(this);
         mQuestionArrayList = new ArrayList<Question>();
         mAdapter.notifyDataSetChanged();
+
+
+
 
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         mFavoriteRef = mDatabaseReference.child(Const.FavoritesPATH).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
