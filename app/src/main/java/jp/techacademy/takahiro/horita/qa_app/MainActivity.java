@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity
             }
 
             Question question = new Question(title, body, name, uid, dataSnapshot.getKey(), mGenre, bytes, answerArrayList);
-            Log.d("Question",String.valueOf(question));
             mQuestionArrayList.add(question);
             mAdapter.notifyDataSetChanged();
         }
@@ -242,7 +241,6 @@ public class MainActivity extends AppCompatActivity
             mToolbar.setTitle("コンピューター");
             mGenre = 4;
         } else if (id == R.id.nav_favorite) {
-            mToolbar.setTitle("お気に入り");
             Intent intent = new Intent(MainActivity.this, FavoriteActivity.class);
             startActivity(intent);
 
