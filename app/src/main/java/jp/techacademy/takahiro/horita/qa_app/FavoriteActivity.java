@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,15 +26,9 @@ import java.util.Map;
 public class FavoriteActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
-//    private Toolbar mToolbar;
-//    private int mGenre = 0;
     private DatabaseReference mDatabaseReference; //データベースへの読み書きに必要なクラス
     private DatabaseReference mFavoriteRef;
-//    private DatabaseReference mGenreRef;
-
     private Map<String, String> mFavoriteMap;
-
     private ListView mListView;
     private ArrayList<Question> mQuestionArrayList;
     private QuestionsListAdapter mAdapter;
@@ -46,16 +39,7 @@ public class FavoriteActivity extends AppCompatActivity
         setContentView(R.layout.list_favorite);
         setTitle("お気に入り");
         mFavoriteMap = new HashMap<>();
-/*
-        // ナビゲーションドロワーの設定
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.app_name, R.string.app_name);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-*/
         // ListViewの準備
         mListView = findViewById(R.id.listView);
         mAdapter = new QuestionsListAdapter(this);
@@ -77,28 +61,6 @@ public class FavoriteActivity extends AppCompatActivity
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-/*
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // 1:趣味を既定の選択とする
-        if(mGenre == 0) {
-            NavigationView navigationView = findViewById(R.id.nav_view);
-            onNavigationItemSelected(navigationView.getMenu().getItem(0));
-        }
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        Menu menu = navigationView.getMenu();
-        MenuItem item = menu.findItem(R.id.nav_favorite);
-    }
-*/
     private ChildEventListener mEventListener = new ChildEventListener() {
 
         @Override
@@ -174,74 +136,6 @@ public class FavoriteActivity extends AppCompatActivity
 
         }
     };
-
-    /*
-    private ChildEventListener mEventListener2 = new ChildEventListener() {
-
-        @Override
-        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            String quid = dataSnapshot.getKey(); //一覧の質問IDを取得
-            HashMap map = (HashMap) dataSnapshot.getValue(); //一覧のデータを取得
-
-            //一覧の質問IDとお気に入り登録済みの質問IDを比較
-            if (mFavoriteMap.containsValue(quid)) {
-
-                String title = (String) map.get("title");
-                String body = (String) map.get("body");
-                String name = (String) map.get("name");
-                String uid = (String) map.get("uid");
-                String imageString = (String) map.get("image");
-                byte[] bytes;
-                if (imageString != null) {
-                    bytes = Base64.decode(imageString, Base64.DEFAULT);
-                } else {
-                    bytes = new byte[0];
-                }
-
-               ArrayList<Answer> answerArrayList = new ArrayList<Answer>();
-
-                HashMap answerMap = (HashMap) map.get("answers");
-                if (answerMap != null) {
-                    for (Object key : answerMap.keySet()) {
-                        HashMap temp = (HashMap) answerMap.get( key);
-                        String answerBody = (String) temp.get("body");
-                        String answerName = (String) temp.get("name");
-                        String answerUid = (String) temp.get("uid");
-                        Answer answer = new Answer(answerBody, answerName, answerUid, (String) key);
-                        answerArrayList.add(answer);
-
-                    }
-                }
-                Question question = new Question(title, body, name, uid, dataSnapshot.getKey(), mGenre, bytes, answerArrayList);
-                mQuestionArrayList.add(question);
-                mAdapter.setQuestionArrayList(mQuestionArrayList);
-                mListView.setAdapter(mAdapter);
-
-            }
-        }
-
-
-        @Override
-        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-        }
-
-        @Override
-        public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-        }
-
-        @Override
-        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-
-        }
-    };
-*/
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
